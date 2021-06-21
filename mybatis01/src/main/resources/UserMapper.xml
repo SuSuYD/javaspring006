@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+    <!--测试   parameterType 参数类型-->
+    <select id="query" parameterType="int" resultType="com.cold.entity.User">
+        select * from tuser where t_id= ${value}
+    </select>
+
+    <!--模糊查询-->
+    <select id="queryByName" parameterType="String" resultType="com.cold.entity.User">
+        select * from tuser where t_name like concat(concat("%",#{userName}),"%")
+    </select>
+
+    <!--新增-->
+    <insert id="addUser" parameterType="com.cold.entity.User">
+        insert into tuser(t_name,t_password)
+        value (#{t_name},#{t_password})
+    </insert>
+
+    <!--新增   并返回主键 id-->
+    <insert id="addUser2" parameterType="com.cold.entity.User">
+        <selectKey keyProperty="t_id" resultType="int" order="AFTER">
+            select max(t_id) from tuser
+        </selectKey>
+        insert into tuser(t_name,t_password)
+        value (#{t_name},#{t_password})
+    </insert>
+
+    <!--修改-->
+    <update id=""></update>
+</mapper>

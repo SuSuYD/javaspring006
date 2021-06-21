@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+<!--事务   转账-->
+    <!--配置数据源-->
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
+        <property name="driverClassName" value="${jdbc.driverClass}"></property>
+        <property name="url" value="${jdbc.Url}"></property>
+        <property name="username" value="${jdbc.user}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+
+    <!--加载配置文件-->
+    <context:property-placeholder location="db.properties"></context:property-placeholder>
+    <!--注入dao-->
+    <bean class="com.cold.day05.d_yx.AccountDaoImpl" id="accountDao">
+        <!--使用了JdbcTempLate去操作数据库  所以要引用数据源-->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--注入service-->
+    <bean class="com.cold.day05.d_yx.AccountServiceImpl" id="accountService">
+        <!--通道set方法依赖dao-->
+        <property name="accountDao" ref="accountDao"></property>
+    </bean>
+
+    <!--定义一个事务管理器--><!--dao层出的问题，就使用 DataSourceTransactionManager 管理器-->
+    <bean id="txManage" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--定义属性，引用数据源属性-->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--自动事务管理-->
+    <tx:annotation-driven transaction-manager="txManage"></tx:annotation-driven>
+</beans>

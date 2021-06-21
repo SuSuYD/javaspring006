@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--半自动代理的配置文件-->
+    <!--半自动的方式就是把代理类交给spring管理-->
+
+    <!--目标类-->
+    <bean id="userService" class="com.cold.day04.a_bzd.UserServiceImpl"></bean>
+    <!--切面类-->
+    <bean id="myAspect" class="com.cold.day04.a_bzd.MyAspect"></bean>
+    <!--代理类-->
+    <bean id="logProxyAspect" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!--name="interfaces"固定写法   value是抽象接口类-->
+        <property name="interfaces" value="com.cold.day04.a_bzd.UserService"></property>
+        <!--目标类-->
+        <property name="target" ref="userService"></property>
+        <!--切面类-->
+        <property name="interceptorNames" value="myAspect"></property>
+    </bean>
+
+
+</beans>

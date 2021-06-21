@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="db.properties"></properties>
+    <typeAliases>
+        <!-- 配置单个的别名 -->
+        <!--<typeAlias type="com.cold.entity.User" alias="user"></typeAlias>-->
+        <!--让 mybatis 批量帮我们取别名，通过扫描包-->
+        <package name="com.cold.entity"/>
+    </typeAliases>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <!--mybatis的配置文件-->
+            <!--数据源-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${db.driver}"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/jdbc005"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <!--<mapper resource="org/mybatis/example/BlogMapper.xml"/>-->
+        <!--创建User的映射文件后，配置映射文件-->
+        <!--<mapper class="com.cold.mapper.UserMapper"></mapper>-->
+        <!--<mapper resource="mapper/UserMapper.xml"></mapper>-->
+        <!--批量配置mapper-->
+        <package name="com.cold.mapper"/>
+    </mappers>
+</configuration>

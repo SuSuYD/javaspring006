@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--id:spring 容器当中唯一的值，可以通过id来获取实例  class :全限定名，指定我们要交给Spring管理的类-->
+    <!--<bean id="userService" class="com.cold.a_ioc.UserServiceImpl"></bean>-->
+
+    <!--业务层-->
+    <!--<bean id="userService" class="com.cold.b_DI.UserServiceImpl">
+        <property name="userDao" ref="userDao"></property>
+    </bean>-->
+    <!--控制器-->
+    <!--<bean id="userController" class="com.cold.b_DI.UserController"></bean>-->
+    <!--数据访问层-->
+    <!--<bean id="userDao" class="com.cold.b_DI.UserDao"></bean>-->
+    <!--默认构造方法的方式-->
+    <!--<bean id="userService" class="com.cold.c_constructor.UserServiceImpl"></bean>-->
+
+    <!--静态工厂-->
+    <!--<bean id="userServiceFactory" class="com.cold.d_factory.StaticFactoryBean" factory-method="createUserService"></bean>-->
+
+    <!--实例工厂-->
+    <!--<bean id="factionBean" class="com.cold.d_factory.InstanceFactoryBean"></bean>-->
+    <!--<bean id="userServiceFactory" factory-bean="factionBean" factory-method="createUserService"></bean>-->
+
+
+
+
+    <!--id:实例对象  class:要管理的类是哪一个-->
+    <!--<bean id="userEntity" class="com.cold.day02.a_setter.User">
+        &lt;!&ndash;对属性进行管理，给普通属性注入值&ndash;&gt;
+        <property name="id" value="1001"></property>
+        &lt;!&ndash;有两种方式，必须有value&ndash;&gt;
+        <property name="name">
+            <value>张三</value>
+        </property>
+        &lt;!&ndash;给集合注入值&ndash;&gt;
+        <property name="list">
+            <list>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+            </list>
+        </property>
+        &lt;!&ndash;给数组注入值&ndash;&gt;
+        &lt;!&ndash;集合和数组的注入方式可以通用&ndash;&gt;
+        <property name="sts">
+            <array>
+                <value>里斯</value>
+                <value>王五</value>
+            </array>
+        </property>
+        <property name="map">
+            <map>
+                <entry key="key1" value="value1"></entry>
+                <entry key="key2" value="value2"></entry>
+            </map>
+        </property>
+        &lt;!&ndash;引入 UserVo类&ndash;&gt;
+        <property name="userVo" ref="UserVoEntity"></property>
+    </bean>
+
+    <bean id="UserVoEntity" class="com.cold.day02.a_setter.UserVo">
+        <property name="name" value="卡卡"></property>
+        <property name="id" value="1221"></property>
+    </bean>-->
+
+
+    <!--使用构造方法注入属性-->
+    <bean id="userEntity" class="com.cold.day02.a_setter.User02">
+        <constructor-arg index="0" value="1002"></constructor-arg>
+        <constructor-arg name="name" value="盛世" ></constructor-arg>
+    </bean>
+
+</beans>

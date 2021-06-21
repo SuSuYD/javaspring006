@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cold.mapper.OrderMapper">
+    <!--1、查询订单表，关联查询订单表里面绑定的用户信息 resultType-->
+    <select id="queryOrderAndUserByType" resultType="orderVo">
+        SELECT u.uname,u.address,o.order_Number orderNumber,o.describer,o.user_id userId
+        FROM t_user u,orders o WHERE tid = user_id;
+    </select>
+
+    <!--查询订单表，关联查询订单表里面绑定的用户信息 resultMap-->
+    <resultMap id="ordersResultMap" type="ordersEntity">
+        <!--orders 表的基本信息-->
+        <id column="id" property="id"></id>
+        <result column="order_Number" property="orderNumber"></result>
+        <result column="createtime" property="createtime"></result>
+        <result column="describer" property="describer"></result>
+        <result column="user_id" property="userId"></result>
+        <!--一对一关系，使用 association-->
+        <association property="userEntity" javaType="userEntity">
+            <!--一对一关系，通过主键和外键绑定-->
+            <id column="user_id" property="tid"></id>
+            <result column="uname" property="uname"></result>
+            <result column="address" property="address"></result>
+        </association>
+
+    </resultMap>
+    <select id="queryOrderAndUserByMap" resultMap="ordersResultMap">
+        SELECT u.uname,u.address,o.order_Number,o.describer,o.user_id
+        FROM t_user u,orders o WHERE u.tid = o.user_id;
+    </select>
+
+    <!--3、查询订单信息和订单明细信息-->
+    <resultMap id="orderDetilResultMao" type="ordersEntity" extends="ordersResultMap">
+        <collection property="orderdatailEntities" ofType="orderdatailEntity">
+            <id column="detail_id" property="id"></id>
+            <result column="product_id" property="productId"></result>
+        </collection>
+    </resultMap>
+    <select id="queryOrderDetail" resultMap="orderDetilResultMao">
+        SELECT u.uname,u.address,o.order_Number,o.describer,o.user_id,d.id detail_id,d.product_id
+        FROM t_user u,orders o,orderdetail d WHERE u.tid = o.user_id AND o.id=d.order_id;
+    </select>
+
+    <!--延迟加载 查询订单的信息，关联查询用户的信息-->
+    <resultMap id="orderAndUserLazyLoadingMap" type="ordersEntity">
+        <!--order表的几本信息-->
+        <id column="id" property="id"></id>
+        <result column="createtime" property="createtime"></result>
+        <result column="describer" property="describer"></result>
+        <result column="user_id" property="userId"></result>
+
+        <association property="userEntity" select="com.cold.mapper.UserMapper.queryById" column="user_id">
+
+        </association>
+    </resultMap>
+    <select id="queryOrderAndUserLazyLoading" resultMap="orderAndUserLazyLoadingMap">
+        select * from orders
+    </select>
+</mapper>
+

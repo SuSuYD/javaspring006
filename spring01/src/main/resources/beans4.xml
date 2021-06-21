@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+<!--全自动-->
+    <!--目标类-->
+    <bean id="userService" class="com.cold.day04.b_qzd.UserServiceImpl"></bean>
+    <!--切面类-->
+    <bean id="myAspect" class="com.cold.day04.b_qzd.MyAspect"></bean>
+    <!--AOP  面向切面编程-->
+    <!--proxy-target-class="true" 声明使用cglib代理-->
+    <aop:config proxy-target-class="true">
+        <!--aop:advisor 代表的就是切面类
+        advice-ref="myAspect" 切面类的引用
+        pointcut="" 切入点
+        public作用域，可省略
+        void 返回值，*代表任意返回类型
+        com.cold.day04.b_qzd 目标类所在的包，不能省略
+        可以用 * 代表目标类或目标了下的所有方法，方法后需加(..)
+        -->
+        <!--<aop:advisor advice-ref="myAspect" pointcut="execution(public void com.cold.day04.b_qzd.UserServiceImpl.add())"></aop:advisor>-->
+        <!--<aop:advisor advice-ref="myAspect" pointcut="execution(* com.cold.day04.b_qzd.*.*(..))"></aop:advisor>-->
+
+        <!--声明切入点切点-->
+        <aop:pointcut id="scanAll" expression="execution(* com.cold.day04.b_qzd.*.*(..))"/>
+        <aop:advisor advice-ref="myAspect" pointcut-ref="scanAll"></aop:advisor>
+    </aop:config>
+</beans>

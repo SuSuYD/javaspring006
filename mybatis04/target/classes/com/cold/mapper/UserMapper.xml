@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cold.mapper.UserMapper">
+    <!-- 3.查询用户信息及用户购买的商品信息 -->
+    <resultMap id="userAndProductMap" type="userEntity">
+        <!--用户信息-->
+        <id column="user_id" property="tid"></id>
+        <result column="uname" property="uname"></result>
+        <result column="address" property="address"></result>
+        <!--订单信息-->
+        <collection property="ordersEntityList" ofType="ordersEntity">
+            <id column="user_id" property="userId"></id>
+            <result column="order_Number" property="orderNumber"></result>
+            <result column="describer" property="describer"></result>
+            <collection property="orderdatailEntities" ofType="OrderdatailEntity">
+                <id column="detail_id" property="id"></id>
+                <result column="product_id" property="productId"></result>
+                <association property="productEntity" javaType="productEntity">
+                    <id column="id"></id>
+                    <result column="p_name" property="pname"></result>
+                    <result column="description" property="description"></result>
+                </association>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="queryUserAndProduct" resultMap="userAndProductMap">
+        SELECT u.uname,u.address,o.order_Number,o.describer,o.user_id,d.id detail_id,d.product_id,p.p_name,p.description
+        FROM t_user u,orders o,orderdetail d,t_product p
+        WHERE u.tid = o.user_id AND o.id=d.order_id AND d.product_id=p.id;
+    </select>
+
+    <!--延迟加载 查询订单的信息，关联查询用户的信息-->
+    <select id="queryById" parameterType="int" resultType="userEntity">
+        select * from t_user where tid = #{tid}
+    </select>
+
+    <!--一级缓存，两个查询调用之间有新增调用-->
+    <insert id="addUser" parameterType="UserEntity" >
+        insert into t_user value(#{tid},#{uname},now(),#{sex},#{address})
+    </insert>
+
+</mapper>
+

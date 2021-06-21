@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cold.mapper.UserMapper">
+    <!--测试   parameterType 参数类型 -->
+    <select id="queryById" parameterType="int" resultType="user">
+        select * from tuser where t_id= ${value}
+    </select>
+
+    <!--模糊查询-->
+    <select id="queryByName" parameterType="String" resultType="com.cold.entity.User">
+        select * from tuser where t_name like concat(concat("%",#{userName}),"%")
+    </select>
+
+    <!--新增   并返回主键 id-->
+    <insert id="addUser" >
+        <selectKey keyProperty="t_id" resultType="int" order="AFTER">
+            select max(t_id) from tuser
+        </selectKey>
+        insert into tuser(t_name,t_password)
+        value (#{t_name},#{t_password})
+    </insert>
+
+    <!--修改parameterType="user"-->
+    <update id="updateUser" parameterType="user">
+        UPDATE tuser SET t_name=#{t_name} WHERE t_id = ${t_id}
+    </update>
+
+    <!--删除-->
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM tuser WHERE t_id =${t_id}
+    </delete>
+
+    <!--输入映射，传入一个包装类，VO类  user是Vo类中的一个对象 private User user;-->
+    <select id="queryByName2" parameterType="com.cold.entity.UserVo" resultType="com.cold.entity.User">
+        select * from tuser where t_id = ${user.t_id} and
+        t_name like concat(concat("%",#{name}),"%")
+    </select>
+
+    <!--输出映射  不涉及条件查询，所以不需要parameterType-->
+    <select id="queryByOrder"  resultType="com.cold.entity.UserVo2">
+        SELECT a.t_id uid,a.t_name uname,a.t_password password,b.id oid,b.state state
+        FROM tuser a RIGHT JOIN torder b ON a.t_id=b.uid;
+    </select>
+
+    <!--resultMap  type为最终要对应到那个类中-->
+    <resultMap id="resultMapForUser" type="com.cold.entity.UserVo2">
+        <!--column对应数据库字段名  property映射到实体类当中的属性-->
+        <!--主键映射-->
+        <id column="id" property="uid"></id>
+        <!--普通属性映射-->
+        <result column="t_name" property="uname"></result>
+        <result column="t_password" property="password"></result>
+        <result column="id" property="oid"></result>
+        <result column="state" property="state"></result>
+    </resultMap>
+    <select id="queryByOrder2"  resultMap="resultMapForUser">
+        SELECT a.t_id id,a.t_name,a.t_password,b.id,b.state
+        FROM tuser a RIGHT JOIN torder b ON a.t_id=b.uid;
+    </select>
+
+
+    <resultMap id="resultMapForUser2" type="com.cold.entity.User">
+        <id column="t_id" property="tId"></id>
+        <result column="t_name" property="tName"></result>
+        <result column="t_password" property="tPassword"></result>
+    </resultMap>
+    <!--动态sql /*tId 是传入的参数*/-->
+    <select id="queryForSql" parameterType="user" resultMap="resultMapForUser2">
+        select * from tuser
+        <where>
+            <if test="tId !=null">
+                and t_id = #{tId}
+            </if>
+
+            <if test="tName != null">
+                and t_name like  concat(concat("%",#{tName}),"%")
+            </if>
+        </where>
+    </select>
+
+    <!--修改-->
+    <update id="updUser" parameterType="user" >
+        update tuser
+        <set>
+            <if test="tName">
+                t_name = #{tName},
+            </if>
+            <if test="tPassword">
+                t_password = #{tPassword}
+            </if>
+        </set>
+        where t_id = #{tId}
+    </update>
+</mapper>
+
